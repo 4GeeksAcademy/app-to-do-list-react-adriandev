@@ -1,28 +1,58 @@
-import React from "react";
+import React, { useState } from 'react';
+import TodoForm from './TodoForm.jsx';
+import TodoItem from './TodoItem.jsx';
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
-
-//create your first component
 const Home = () => {
-	return (
-		<div className="text-center">
-            
+  const [todos, setTodos] = useState([]); 
 
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
-		</div>
-	);
+  const addTask = (newTaskText) => {
+    if (newTaskText.trim() === "") return;
+    setTodos(prevTodos => [newTaskText, ...prevTodos]);
+  };
+
+  const deleteTask = (indexToDelete) => {
+    setTodos(prevTodos => {
+      return prevTodos.filter((_, index) => index !== indexToDelete);
+    });
+  };
+  
+  return (
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-8 col-lg-6">
+          <h1 className="text-center my-4">Lista de cosas por hacer</h1>
+          
+          <div className="card shadow-sm">
+            
+            <TodoForm onAddTask={addTask} />
+
+            <ul className="list-group list-group-flush">
+              {todos.length > 0 ? (
+                todos.map((task, index) => (
+                  <TodoItem 
+                    key={index}
+                    task={task} 
+                    index={index} 
+                    onDelete={deleteTask} 
+                  />
+                ))
+              ) : (
+                <li className="list-group-item text-muted fst-italic py-3">
+                  No hay tareas, añadir tareas
+                </li>
+              )}
+            </ul>
+
+            {todos.length > 0 && (
+              <div className="card-footer text-muted small">
+                {todos.length} item añadido
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Home;
